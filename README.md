@@ -7,6 +7,7 @@ The project is written for fun and learning sqlalchemy, databases, telegram api 
 
 Requirements
 =====================
+* Python 3.6
 * psycopg2==2.7.5
 * python-telegram-bot==11.1.0
 * SQLAlchemy==1.2.11
