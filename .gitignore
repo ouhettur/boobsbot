@@ -1,0 +1,6 @@
+config.py
+/temp_media/
+*.log
+config.py
+__pycache__/
+.idea/
