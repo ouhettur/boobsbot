@@ -5,6 +5,8 @@ from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardM
                       InlineQueryResultCachedMpeg4Gif)
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, ConversationHandler,
                           CallbackQueryHandler, InlineQueryHandler)
+
+from commands.admin import show_reported_img
 from dao import *
 from config import token
 from s3 import upload_to_s3
@@ -203,31 +205,6 @@ def show_top_img(bot, update):
             elif img.media_type == 'animation':
                 bot.send_animation(chat_id=telegram_id, animation=telegram_file_id,
                                    caption=f'Total rating: {img.sum_rating} 🍑 \nNumber of ratings: {img.count_rating} \n{text}')
-
-
-def show_reported_img(bot, update):
-    telegram_id = update.message.chat.id
-    if find_user_role(telegram_id) != 'admin':
-        update.message.reply_text("Not enough rights")
-        return
-    count = count_reported_img()
-    update.message.reply_text(f"{count} new images with complaints.")
-    reported_imgs = all_reported_img()
-    for img in reported_imgs:
-        img_id = img.id
-        telegram_file_id = img.telegram_file_id
-
-        keyboard = [[InlineKeyboardButton("to justify", callback_data="{'img_id': %s, 'mark': 2}" % img_id),
-                     InlineKeyboardButton("to archive", callback_data="{'img_id': %s, 'mark': 3}" % img_id)]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        if img.media_type == 'img':
-            bot.send_photo(chat_id=telegram_id, photo=telegram_file_id,
-                           reply_markup=reply_markup,
-                           caption=f'Total rating: {img.sum_rating} 🍑')
-        elif img.media_type == 'animation':
-            bot.send_animation(chat_id=telegram_id, animation=telegram_file_id,
-                               reply_markup=reply_markup,
-                               caption=f'Total rating: {img.sum_rating} 🍑')
 
 
 def inlinequery(bot, update):
