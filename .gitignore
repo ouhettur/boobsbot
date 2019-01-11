@@ -2,7 +2,6 @@ dev_settings.py
 prod_settings.py
 /temp_media/
 *.log
-config.py
 __pycache__/
 .idea/
 /venv/
