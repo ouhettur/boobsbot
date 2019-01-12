@@ -47,3 +47,11 @@ class Show(Base):
     reported_at = Column(DateTime)
     img = relationship(Img)
     user = relationship(User)
+
+class InlineQuery(Base):
+    __tablename__ = 'InlineQuery'
+    id = Column(Integer, primary_key=True)
+    telegram_id = Column(BigInteger)
+    query = Column(Text)
+    created_at = Column(DateTime)
+

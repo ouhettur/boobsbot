@@ -195,3 +195,12 @@ def archive_img(img_id: int):
         .filter(Img.id == img_id) \
         .update({'archived_at': datetime.datetime.utcnow()})
     session.commit()
+
+
+def save_inline_query(query: str, telegram_id: int):
+    session.add(InlineQuery(query=query,
+                            telegram_id=telegram_id,
+                            created_at=datetime.datetime.utcnow()
+                            )
+                )
+    session.commit()

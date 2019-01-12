@@ -209,19 +209,20 @@ def show_top_img(bot, update):
 
 def inlinequery(bot, update):
     query = update.inline_query.query
+    telegram_id = update.inline_query.from_user.id
     results = []
     for media in find_random_media(count=7):
         if media.media_type == 'img':
             results.append(InlineQueryResultCachedPhoto(type='photo',
-                                                        id=uuid.uuid4(),
+                                                        id=update.inline_query.id,
                                                         photo_file_id=media.telegram_file_id))
         elif media.media_type == 'animation':
             results.append(InlineQueryResultCachedMpeg4Gif(type='mpeg4_gif',
-                                                           id=uuid.uuid4(),
+                                                           id=update.inline_query.id,
                                                            mpeg4_file_id=media.telegram_file_id))
 
     update.inline_query.answer(results, next_offset=7, cache_time=0)
-
+    save_inline_query(query, telegram_id)
 
 def error(bot, update, error):
     logger.warning('Update "%s" caused error "%s"', update, error)
