@@ -81,7 +81,7 @@ def find_random_available_media(user_id: int) -> Img:
         .first()
 
 
-def find_top_media(user_id: int, count=10):
+def find_top_media(user_id: int, count=10) -> list:
     subquery = session.query(Show).filter(Show.user_id == user_id).subquery()
     return session.query(Img.id, Img.user_id, Img.telegram_file_id, Img.count_rating, Img.sum_rating, Img.media_type,
                          subquery.c.rating) \
@@ -134,7 +134,7 @@ def count_user_upload(user_id: int) -> int:
         .count()
 
 
-def count_user_img_liked(user_id: int):
+def count_user_img_liked(user_id: int) -> int:
     return session.query(Img) \
         .outerjoin(Show, Show.img_id == Img.id) \
         .filter(Img.user_id == user_id) \
@@ -142,7 +142,7 @@ def count_user_img_liked(user_id: int):
         .count()
 
 
-def count_user_img_disliked(user_id: int):
+def count_user_img_disliked(user_id: int) -> int:
     return session.query(Img) \
         .outerjoin(Show, Show.img_id == Img.id) \
         .filter(Img.user_id == user_id) \
@@ -150,7 +150,7 @@ def count_user_img_disliked(user_id: int):
         .count()
 
 
-def find_random_media(count: int):
+def find_random_media(count: int) -> list:
     return session.query(Img) \
         .filter(Img.archived_at == None) \
         .options(load_only('telegram_file_id', 'media_type')) \
@@ -162,7 +162,7 @@ def find_random_media(count: int):
     ).limit(count).all()
 
 
-def find_user_role(telegram_id: int):
+def find_user_role(telegram_id: int) -> str:
     user = session.query(User) \
         .filter(User.telegram_id == telegram_id) \
         .first()
@@ -176,7 +176,7 @@ def count_reported_img() -> int:
         .count()
 
 
-def all_reported_img():
+def all_reported_img() -> list:
     return session.query(Img) \
         .filter(Img.reports_count > 0) \
         .filter(Img.archived_at == None) \
