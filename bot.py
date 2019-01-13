@@ -7,6 +7,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, Conv
                           CallbackQueryHandler, InlineQueryHandler)
 
 from commands.admin import show_reported_img
+from commands.common import start, initiation_media
 from dao import *
 from config import token
 from s3 import upload_to_s3
@@ -19,75 +20,6 @@ GET_IMG, SHOW_REPORTS = range(2)
 
 reply_keyboard = [['/next', '/upload', '/info']]
 markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-
-
-def start(bot, update):
-    print(update.message)
-    telegram_id = update.message.chat.id
-    if update.message.chat.type == 'private':
-        if not is_telegram_id_exists(telegram_id):
-            first_name = update.message.from_user.first_name
-            last_name = update.message.from_user.last_name
-            login = update.message.from_user.username
-            language_code = update.message.from_user.language_code
-            add_user_by_telegram(telegram_id, first_name, last_name, login, language_code)
-            update.message.reply_text(
-                'Now you are in the best boobs telegram bot! '
-                'You can use this bot in other conversations via inline command @boobsbot_bot .'
-                'And also you can add the bot to chats and groups to please interlocutors cool pictures 🍓.')
-        update.message.reply_text(
-            "Use menu commands!", reply_markup=markup)
-    elif update.message.chat.type == 'group' or 'supergroup':
-        if not is_telegram_id_exists(telegram_id):
-            chat_name = update.message.chat.title
-            add_chat_by_telegram(telegram_id, chat_name)
-            bot.sendMessage(chat_id=telegram_id, text="Now the bot works in this chat!")
-        bot.sendMessage(chat_id=telegram_id, text="Use the /next command to call boobs to this chat")
-
-
-def initiation_media(bot, update):
-    telegram_id = update.message.chat.id
-    if update.message.chat.type == 'private':
-        user_id = find_user_id_by_telegram_id(telegram_id=telegram_id)
-        img = find_random_available_media(user_id=user_id)
-        if img is None:
-            update.message.reply_text('Try later, and we will try to find Boobs for you.\
-                                       Help the community and download new boobs by command /upload',
-                                      reply_markup=markup)
-        else:
-            telegram_file_id = img.telegram_file_id
-            img_id = img.id
-            keyboard = [[InlineKeyboardButton("like", callback_data="{'img_id': %s, 'mark': 1}" % img_id),
-                         InlineKeyboardButton("dislike", callback_data="{'img_id': %s, 'mark': -1}" % img_id),
-                         InlineKeyboardButton("report", callback_data="{'img_id': %s, 'mark': 0}" % img_id)]]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            if img.media_type == 'img':
-                bot.send_photo(chat_id=telegram_id, photo=telegram_file_id,
-                               reply_markup=reply_markup,
-                               caption=f'Total rating: {img.sum_rating} 🍑')
-            elif img.media_type == 'animation':
-                bot.send_animation(chat_id=telegram_id, animation=telegram_file_id,
-                                   reply_markup=reply_markup,
-                                   caption=f'Total rating: {img.sum_rating} 🍑')
-            save_show(img_id=img.id, user_id=user_id)
-    elif update.message.chat.type == 'group' or 'supergroup':
-        if is_telegram_id_exists(telegram_id):
-            user_id = find_user_id_by_telegram_id(telegram_id=telegram_id)
-            img = find_random_available_media(user_id=user_id)
-            if img is None:
-                bot.sendMessage(chat_id=telegram_id, text='Try later, and we will try to find Boobs for you.\
-                                       Help the community and download new boobs by command /upload in personal chat')
-            else:
-                telegram_file_id = img.telegram_file_id
-                if img.media_type == 'img':
-                    bot.send_photo(chat_id=telegram_id, photo=telegram_file_id,
-                                   caption=f'Total rating: {img.sum_rating} 🍑')
-                elif img.media_type == 'animation':
-                    bot.send_animation(chat_id=telegram_id, animation=telegram_file_id,
-                                       caption=f'Total rating: {img.sum_rating} 🍑')
-                save_show(img_id=img.id, user_id=user_id)
-        else:
-            bot.sendMessage(chat_id=telegram_id, text='To start, activate the bot with the /start command')
 
 
 def send_reply_upload_advice(bot, update):
@@ -223,6 +155,7 @@ def inlinequery(bot, update):
 
     update.inline_query.answer(results, next_offset=7, cache_time=0)
     save_inline_query(query, telegram_id)
+
 
 def error(bot, update, error):
     logger.warning('Update "%s" caused error "%s"', update, error)
