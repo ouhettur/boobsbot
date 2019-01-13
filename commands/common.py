@@ -52,20 +52,20 @@ def send_media(bot, update, user_id, telegram_id):
     if img is None:
         bot.sendMessage(chat_id=telegram_id, text='Try later, and we will try to find Boobs for you.\
                                Help the community and download new boobs by command /upload in personal chat')
-    else:
-        telegram_file_id = img.telegram_file_id
-        img_id = img.id
-        chat_type = update.message.chat.type
-        reply_markup = create_keyboard(chat_type, img_id)
-        if img.media_type == 'img':
-            bot.send_photo(chat_id=telegram_id, photo=telegram_file_id,
+        return
+    telegram_file_id = img.telegram_file_id
+    img_id = img.id
+    chat_type = update.message.chat.type
+    reply_markup = create_keyboard(chat_type, img_id)
+    if img.media_type == 'img':
+        bot.send_photo(chat_id=telegram_id, photo=telegram_file_id,
+                       reply_markup=reply_markup,
+                       caption=f'Total rating: {img.sum_rating} 🍑')
+    elif img.media_type == 'animation':
+        bot.send_animation(chat_id=telegram_id, animation=telegram_file_id,
                            reply_markup=reply_markup,
                            caption=f'Total rating: {img.sum_rating} 🍑')
-        elif img.media_type == 'animation':
-            bot.send_animation(chat_id=telegram_id, animation=telegram_file_id,
-                               reply_markup=reply_markup,
-                               caption=f'Total rating: {img.sum_rating} 🍑')
-        save_show(img_id=img.id, user_id=user_id)
+    save_show(img_id=img.id, user_id=user_id)
 
 
 def create_keyboard(chat_type, img_id):
