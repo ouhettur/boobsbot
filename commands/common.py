@@ -71,7 +71,7 @@ def send_media(bot, update, user_id, telegram_id):
 def create_keyboard(chat_type, img_id):
     if chat_type == 'group' or 'supergroup':
         return None
-    if chat_type == 'private':
+    elif chat_type == 'private':
         keyboard = [[InlineKeyboardButton("like", callback_data="{'img_id': %s, 'mark': 1}" % img_id),
                      InlineKeyboardButton("dislike", callback_data="{'img_id': %s, 'mark': -1}" % img_id),
                      InlineKeyboardButton("report", callback_data="{'img_id': %s, 'mark': 0}" % img_id)]]
