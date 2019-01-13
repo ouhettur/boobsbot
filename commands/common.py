@@ -69,7 +69,6 @@ def send_media(bot, update, user_id, telegram_id):
 
 
 def create_keyboard(chat_type, img_id):
-    print(chat_type * 100)
     if chat_type == 'private':
         keyboard = [[InlineKeyboardButton("like", callback_data="{'img_id': %s, 'mark': 1}" % img_id),
                      InlineKeyboardButton("dislike", callback_data="{'img_id': %s, 'mark': -1}" % img_id),
