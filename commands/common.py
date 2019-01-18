@@ -79,18 +79,6 @@ def create_keyboard(chat_type, img_id):
         return None
 
 
-# def info(bot, update):
-#     if update.message.chat.type == 'private':
-#         telegram_id = update.message.chat.id
-#         user_id = find_user_id_by_telegram_id(telegram_id=telegram_id)
-#         count_img_upload = count_user_upload(user_id=user_id)
-#         count_user_img_was_liked = count_user_img_liked(user_id=user_id)
-#         count_user_img_was_disliked = count_user_img_disliked(user_id=user_id)
-#         update.message.reply_text(f'You have uploaded {count_img_upload} pictures \n'
-#                                   f'Your pictures were liked {count_user_img_was_liked} times\n'
-#                                   f'Your pictures were disliked {count_user_img_was_disliked} times',
-#                                   reply_markup=markup)
-
 def info(bot, update):
     if update.message.chat.type == 'private':
         telegram_id = update.message.chat.id

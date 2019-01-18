@@ -86,7 +86,7 @@ def find_top_media(user_id: int, count=10) -> list:
     return session.query(Img.id, Img.user_id, Img.telegram_file_id, Img.count_rating, Img.sum_rating, Img.media_type,
                          subquery.c.rating) \
         .outerjoin(subquery, subquery.c.img_id == Img.id) \
-        .order_by(Img.sum_rating.desc()) \
+        .order_by(Img.sum_rating.desc(), Img.count_rating) \
         .limit(count)
 
 
