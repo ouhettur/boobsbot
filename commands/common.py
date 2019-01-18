@@ -11,7 +11,7 @@ def start(bot, update):
     telegram_id = update.message.chat.id
     if update.message.chat.type == 'private':
         private_start(bot, update, telegram_id)
-    elif update.message.chat.type == 'group' or 'supergroup':
+    elif update.message.chat.type in ('group', 'supergroup'):
         group_start(bot, update, telegram_id)
 
 
@@ -75,6 +75,59 @@ def create_keyboard(chat_type, img_id):
                      InlineKeyboardButton("report", callback_data="{'img_id': %s, 'mark': 0}" % img_id)]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         return reply_markup
-    elif chat_type == 'group' or 'supergroup':
+    elif chat_type in ('group', 'supergroup'):
         return None
 
+
+# def info(bot, update):
+#     if update.message.chat.type == 'private':
+#         telegram_id = update.message.chat.id
+#         user_id = find_user_id_by_telegram_id(telegram_id=telegram_id)
+#         count_img_upload = count_user_upload(user_id=user_id)
+#         count_user_img_was_liked = count_user_img_liked(user_id=user_id)
+#         count_user_img_was_disliked = count_user_img_disliked(user_id=user_id)
+#         update.message.reply_text(f'You have uploaded {count_img_upload} pictures \n'
+#                                   f'Your pictures were liked {count_user_img_was_liked} times\n'
+#                                   f'Your pictures were disliked {count_user_img_was_disliked} times',
+#                                   reply_markup=markup)
+
+def info(bot, update):
+    if update.message.chat.type == 'private':
+        telegram_id = update.message.chat.id
+        user_id = find_user_id_by_telegram_id(telegram_id=telegram_id)
+        count_img_upload = count_user_upload(user_id=user_id)
+        count_user_img_was_liked = count_user_img_liked(user_id=user_id)
+        count_user_img_was_disliked = count_user_img_disliked(user_id=user_id)
+        count_user_img_was_reported = count_user_img_reported(user_id=user_id)
+        count_user_img_was_archived = count_user_img_archived(user_id=user_id)
+        update.message.reply_text(f'You have uploaded {count_img_upload} pictures \n'
+                                  f'Your pictures were liked {count_user_img_was_liked} times\n'
+                                  f'Your pictures were disliked {count_user_img_was_disliked} times\n'
+                                  f'Your pictures were reported {count_user_img_was_reported} times\n'
+                                  f'Your pictures were archived {count_user_img_was_archived} times',
+                                  reply_markup=markup)
+
+
+def show_top_img(bot, update):
+    telegram_id = update.message.chat.id
+    user_id = find_user_id_by_telegram_id(telegram_id=telegram_id)
+    if update.message.chat.type == 'private':
+        imgs = find_top_media(user_id=user_id)
+        for img in imgs:
+            if img.rating == 1:
+                text = 'You liked boobs'
+            elif img.rating == -1:
+                text = 'You disliked it'
+            elif img.user_id == user_id:
+                text = 'This is your image 👋'
+            else:
+                text = 'You didn\'t rate it'
+            telegram_file_id = img.telegram_file_id
+            if img.media_type == 'img':
+                bot.send_photo(chat_id=telegram_id, photo=telegram_file_id,
+                               caption=f'Total rating: {img.sum_rating}\
+                                🍑 \nNumber of ratings: {img.count_rating} \n{text}')
+            elif img.media_type == 'animation':
+                bot.send_animation(chat_id=telegram_id, animation=telegram_file_id,
+                                   caption=f'Total rating: {img.sum_rating}\
+                                    🍑 \nNumber of ratings: {img.count_rating} \n{text}')

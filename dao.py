@@ -150,6 +150,21 @@ def count_user_img_disliked(user_id: int) -> int:
         .count()
 
 
+def count_user_img_reported(user_id: int) -> int:
+    return session.query(Img) \
+        .outerjoin(Show, Show.img_id == Img.id) \
+        .filter(Img.user_id == user_id) \
+        .filter(Show.reported_at != None) \
+        .count()
+
+
+def count_user_img_archived(user_id: int) -> int:
+    return session.query(Img) \
+        .filter(Img.user_id == user_id)\
+        .filter(Img.archived_at != None)\
+        .count()
+
+
 def find_random_media(count: int) -> list:
     return session.query(Img) \
         .filter(Img.archived_at == None) \

@@ -6,3 +6,4 @@
 /env/
 *.ini
 local_config.py
+local_settings.py
