@@ -163,8 +163,8 @@ def place_in_upload_rating(user_id: int) -> int:
                              func.rank().over(order_by=func.coalesce(func.sum(Img.sum_rating), 0).desc()).label("rnk")) \
         .outerjoin(Img, User.id == Img.user_id) \
         .group_by(User.id).subquery()
-    return session.query(subquery.c.rnk).filter(subquery.c.id == user_id).first()
-
+    rank = session.query(subquery.c.rnk).filter(subquery.c.id == user_id).first()
+    return rank.rnk
 
 def count_user_img_archived(user_id: int) -> int:
     return session.query(Img) \

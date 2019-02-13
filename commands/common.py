@@ -89,12 +89,13 @@ def info(bot, update):
         count_user_img_was_reported = count_user_img_reported(user_id=user_id)
         count_user_img_was_archived = count_user_img_archived(user_id=user_id)
         place_in_rating = place_in_upload_rating(user_id=user_id)
+        print(place_in_rating)
         update.message.reply_text(f'You have uploaded {count_img_upload} pictures \n'
                                   f'Your pictures were liked {count_user_img_was_liked} times\n'
                                   f'Your pictures were disliked {count_user_img_was_disliked} times\n'
                                   f'Your pictures were reported {count_user_img_was_reported} times\n'
-                                  f'Your pictures were archived {count_user_img_was_archived} times',
-                                  f'You have the {place_in_rating} place in the ranking of content uploaders.',
+                                  f'Your pictures were archived {count_user_img_was_archived} times\n'
+                                  f'You have the {place_in_rating} place in the ranking of content uploaders',
                                   reply_markup=markup)
 
 
