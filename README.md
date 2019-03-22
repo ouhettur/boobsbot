@@ -1,6 +1,6 @@
 # boobsbot
 
-Telegram bot for viewing and uploading pictures by users, ratings on [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) with postgess database.
+Telegram bot for viewing and uploading pictures by users, ratings on [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) with postges database.
 You can use the bot at [@boobsbot_bot](https://telegram.me/boobsbot_bot)
 
 The project is written for fun and learning sqlalchemy, databases, telegram api and simple python coding.
