@@ -9,7 +9,7 @@ docutils==0.14
 future==0.17.1
 idna==2.8
 jmespath==0.9.3
-Mako==1.0.7
+Mako==1.2.2
 MarkupSafe==1.1.0
 psycopg2==2.7.5
 pycparser==2.19
